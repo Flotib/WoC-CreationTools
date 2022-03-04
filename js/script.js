@@ -37,6 +37,14 @@ var app = new Vue({
 			return tabMap[this.tab]
 		},
 
+		printItem() {
+			return (
+				'{ <br>	id: ' + (this.itemCreation.id === undefined? 'not defined' : this.itemCreation.id) + ',</br>	'
+				+ 'name: ' + this.itemCreation.name + ',<br>	'
+				+ (this.itemCreation.equipable === undefined || this.itemCreation.equipable === false? '' : ('equipable: true,</br>	')) 
+			)
+		},
+
 		/*
 		idcheck(){
 			if 
