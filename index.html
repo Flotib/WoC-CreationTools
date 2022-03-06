@@ -37,53 +37,53 @@
 				<span>
 					<p>Quality:</p>
 					<select :style="'color:'+getQualityColor" v-model="itemCreation.quality">
-						<option class="quality-poor" value="0">Poor</option>
-						<option class="quality-common" value="1">Common</option>
-						<option class="quality-uncommon" value="2">Uncommon</option>
-						<option class="quality-rare" value="3">Rare</option>
-						<option class="quality-epic" value="4">Epic</option>
-						<option class="quality-legendary" value="5">Legendary</option>
-						<option class="quality-artifact" value="6">Artifact</option>
-						<option class="quality-heirloom" value="7">Heirloom</option>
+						<option class="quality-poor" :value="0">Poor</option>
+						<option class="quality-common" :value="1">Common</option>
+						<option class="quality-uncommon" :value="2">Uncommon</option>
+						<option class="quality-rare":value="3">Rare</option>
+						<option class="quality-epic" :value="4">Epic</option>
+						<option class="quality-legendary" :value="5">Legendary</option>
+						<option class="quality-artifact" :value="6">Artifact</option>
+						<option class="quality-heirloom" :value="7">Heirloom</option>
 					</select>
 				</span>
 				<span>
 					<p>Unique:</p>
 					<select v-model="itemCreation.unique">
-						<option value="0">Not unique</option>
-						<option value="1">Unique</option>
-						<option value="2">Unique-Equipped</option>
+						<option :value="0">Not unique</option>
+						<option :value="1">Unique</option>
+						<option :value="2">Unique-Equipped</option>
 					</select>
 				</span>
 				<span>
 					<p>Equipable:</p>
-					<input type="checkbox" v-model="itemCreation.equipable">
-					<select v-if="itemCreation.equipable" v-model="itemCreation.slotType.type">
+					<input type="checkbox" @click="itemEquipable()">
+					<select v-if="itemCreation.equipable" v-model="itemCreation.slotType.type" @click="itemTypeChange()">
 						<option value="weapon">Weapon</option>
 						<option value="trinket">Trinket</option>
 					</select>
 					<select v-if="itemCreation.equipable && itemCreation.slotType.type === 'weapon'" v-model="itemCreation.slotType.name">
-							<option value="0">Sword</option>
-							<option value="1">Axe</option>
-							<option value="2">Mace</option>
-							<option value="3">Dagger</option>
-							<option value="4">Polearm</option>
-							<option value="5">Fist Weapon</option>
-							<option value="6">Staff</option>
-							<option value="7">Bow</option>
-							<option value="8">Crossbow</option>
-							<option value="9">Gun</option>
-							<option value="20">Shield</option>
+							<option :value="0">Sword</option>
+							<option :value="1">Axe</option>
+							<option :value="2">Mace</option>
+							<option :value="3">Dagger</option>
+							<option :value="4">Polearm</option>
+							<option :value="5">Fist Weapon</option>
+							<option :value="6">Staff</option>
+							<option :value="7">Bow</option>
+							<option :value="8">Crossbow</option>
+							<option :value="9">Gun</option>
+							<option :value="20">Shield</option>
 					</select>
 					<select v-if="itemCreation.equipable" v-model="itemCreation.slotType.subtype">
-						<option v-if="itemCreation.slotType.type === 'weapon'" value="'One-Hand'">One-Hand</option>
-						<option v-if="itemCreation.slotType.type === 'weapon'" value="'Two-Hand'">Two-Hand</option>
-						<option v-if="itemCreation.slotType.type === 'weapon'" value="'Main Hand'">Main Hand</option>
-						<option v-if="itemCreation.slotType.type === 'weapon'" value="'Off Hand'">Off Hand</option>
+						<option v-if="itemCreation.slotType.type === 'weapon'" value="One-Hand">One-Hand</option>
+						<option v-if="itemCreation.slotType.type === 'weapon'" value="Two-Hand">Two-Hand</option>
+						<option v-if="itemCreation.slotType.type === 'weapon'" value="Main Hand">Main Hand</option>
+						<option v-if="itemCreation.slotType.type === 'weapon'" value="Off Hand">Off Hand</option>
 	
-						<option v-if="itemCreation.slotType.type === 'trinket'" value="'Neck'">Neck</option>
-						<option v-if="itemCreation.slotType.type === 'trinket'" value="'Ring'">Ring</option>
-						<option v-if="itemCreation.slotType.type === 'trinket'" value="'Trinket'">Trinket</option>
+						<option v-if="itemCreation.slotType.type === 'trinket'" value="Neck">Neck</option>
+						<option v-if="itemCreation.slotType.type === 'trinket'" value="Ring">Ring</option>
+						<option v-if="itemCreation.slotType.type === 'trinket'" value="Trinket">Trinket</option>
 					</select>
 				</span>
 				<span>
@@ -97,8 +97,9 @@
 		</div>
 
 		<div id="generated-result">
-			<code v-html="printItem">
-</code>
+			<code>
+{{printItem + ','}}
+			</code>
 		</div>
 
 	</div>
