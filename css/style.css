@@ -40,6 +40,52 @@ button,
 select,
 a {
   -webkit-tap-highlight-color: #00000000 !important;
+  outline: none;
+  border: none;
+}
+
+select {
+	background-color: #000;
+	color: white;
+	border: 1px solid white;
+	padding: 4px;
+}
+
+option {
+	background-color: black;
+	color: white;
+}
+
+.quality-poor {
+	color: #9d9d9d !important;
+}
+
+.quality-common {
+	color: #fff !important;
+}
+
+.quality-uncommon {
+	color: #1eff00 !important;
+}
+
+.quality-rare {
+	color: #0070dd !important;
+}
+
+.quality-epic {
+	color: #a335ee !important;
+}
+
+.quality-legendary {
+	color: #ff8000 !important;
+}
+
+.quality-artifact {
+	color: #e6cc80 !important;
+}
+
+.quality-heirloom {
+	color: #00ccff !important;
 }
 
 #app {
@@ -74,6 +120,12 @@ a {
 	border-radius: 8px;
 	padding: 24px;
 	margin-bottom: 15px;
+}
+
+#creation-window div span {
+	display: block;
+	padding: 2px;
+	margin: 12px 0 12px 0;
 }
 
 #generated-result {
