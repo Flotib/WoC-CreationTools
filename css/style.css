@@ -1,5 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+@font-face {
+    font-family: "BlizQuadrata Web";
+    src: url('../assets/fonts/BlizQuadrataWeb.ttf') format('truetype');
+    src: url('../assets/fonts/BlizQuadrataWeb.eot');
+    src: url('../assets/fonts/BlizQuadrataWeb.eot?#iefix') format('embedded-opentype'),
+        url('../assets/fonts/BlizQuadrataWeb.woff2') format('woff2'),
+        url('../assets/fonts/BlizQuadrataWeb.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Arial Narrow";
+    src: url('../assets/fonts/ArialNarrow.ttf') format('truetype');
+    src: url('../assets/fonts/ArialNarrow.eot');
+    src: url('../assets/fonts/ArialNarrow.eot?#iefix') format('embedded-opentype'),
+        url('../assets/fonts/ArialNarrow.woff2') format('woff2'),
+        url('../assets/fonts/ArialNarrow.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
 	margin: 0;
@@ -128,9 +151,117 @@ option {
 	margin: 12px 0 12px 0;
 }
 
+#item-creation {
+	user-select: none;
+}
+
 #generated-result {
 	white-space: pre-wrap;
 	border: 1px solid white;
 	border-radius: 8px;
 	padding: 24px;
+}
+
+.item-tooltip-placeholder {
+	position: absolute;
+	right: 120px;
+	top: 200px;
+	width: 280px;
+	pointer-events: none;
+	user-select: none;
+}
+
+.item-icon {
+	position: absolute;
+	right: 420px;
+	top: 200px;
+	width: 56px;
+	height: 56px;
+	background-position: center;
+	background-size: contain;
+	border-radius: 5px;
+}
+
+.item-tooltip {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	z-index: 1000;
+	width: auto;
+	width: 280px; /* 280px default, if sellprice is too high can be a problem*/
+	height: auto;
+	pointer-events: none;
+	user-select: none;
+	border-radius: 7px;
+	left: 0;
+	top: 0;
+	border: 2px groove #bbb;
+	background-color: #000218c6;
+	padding: 8px;
+	pointer-events: none;
+	user-select: none;
+}
+
+.item-tooltip p {
+	font-size: 18px;
+	line-height: 20px;
+	color: #fff;
+	font-weight: 100;
+	font-family: BlizQuadrata Web;
+}
+
+.item-tooltip div {
+	display: flex;
+	justify-content: space-between;
+}
+
+.item-tooltip div p {
+	font-size: 18px !important;
+	line-height: 20px !important;
+	color: #fff !important;
+	font-weight: 100 !important;
+	margin: 0 !important;
+}
+
+.item-tooltip p:first-of-type {
+	font-size: 22px;
+	line-height: 20px;
+	margin-bottom: 4px;
+}
+
+.item-tooltip-money {
+	color: #fff;
+	margin-top: 3px;
+	width: auto;
+}
+
+.item-tooltip-money span:first-of-type {
+	margin-left: 10px;
+}
+
+.item-tooltip-money span {
+	display: inline-flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-direction: row;
+	width: auto;
+	font-size: 18px !important;
+	font-family: Arial Narrow;
+}
+
+.item-tooltip-money img {
+	margin-left: 2px;
+	margin-right: 6px;
+}
+
+.item-tooltip-money-no-margin {
+	margin: 0 !important;
+}
+
+.item-tooltip-money-no-margin span {
+	margin: 0 !important;
+}
+
+.item-tooltip-money-no-margin img {
+	margin-right: 0 !important;
 }

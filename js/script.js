@@ -32,6 +32,37 @@ var app = new Vue({
 
 	computed: {
 
+		tooltipItemWeaponType() {
+			let itemWeaponType = this.itemCreation.slotType.name
+
+			const weaponTypeMapping = {
+				0: 'Sword',
+				1: 'Axe',
+				2: 'Mace',
+				3: 'Dagger',
+				4: 'Polearm',
+				5: 'Fist Weapon',
+				6: 'Staff',
+				7: 'Bow',
+				8: 'Crossbow',
+				9: 'Gun',
+				20: 'Shield',
+			}
+
+			return weaponTypeMapping[itemWeaponType]
+		},
+
+		tooltipItemUniqueType() {
+			let itemUniqueType = this.itemCreation.unique
+
+			const weaponTypeMapping = {
+				1: 'Unique',
+				2: 'Unique-Equipped',
+			}
+
+			return weaponTypeMapping[itemUniqueType]
+		},
+
 		tabname() {
 
 			const tabMap = {
@@ -108,6 +139,15 @@ var app = new Vue({
 			}
 		},
 
+		itemIcon(item) {
+			icon = 'inv_misc_questionmark'
+			if (item.icon != null) {
+				icon = item.icon
+			}
+
+			return icon
+		},
+
 		reset(tab) {
 			if (tab == 0) {
 				this.itemCreation.id = undefined
@@ -115,17 +155,17 @@ var app = new Vue({
 				this.itemCreation.equipable = undefined
 				this.itemCreation.quality = 0
 				this.itemCreation.unique = 0
-				this.itemCreation.slotType.type = 'weapon'
-				this.itemCreation.slotType.name = 0
-				this.itemCreation.slotType.subtype = ''
+				this.itemCreation.slotType.type = undefined
+				this.itemCreation.slotType.name = undefined
+				this.itemCreation.slotType.subtype = undefined
 				this.itemCreation.icon = null
 				this.itemCreation.baseMinDamage = undefined
 				this.itemCreation.baseMaxDamage = undefined
 				this.itemCreation.requiredLevel = undefined
 				this.itemCreation.stackMaxSize = undefined
 				this.itemCreation.stackSize = 1
-				this.itemCreation.quote = ''
-				this.itemCreation.material = false
+				this.itemCreation.quote = undefined
+				this.itemCreation.material = undefined
 				this.itemCreation.salable = true
 				this.itemCreation.sellPrice = undefined
 				this.itemCreation.cost = undefined

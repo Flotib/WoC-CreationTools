@@ -21,7 +21,21 @@
 
 		<h2>{{ tabname }}</h2>
 		<div id="creation-window">
-
+			<div class="item-icon" :style="'background-image: url(assets/icons/'+itemIcon(itemCreation)+'.png'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
+			<div class="item-tooltip-placeholder">
+				<div class="item-tooltip">
+					<p :style="'color:'+getQualityColor">{{ itemCreation.name }}</p>
+					<p v-if="itemCreation.unique != null">{{ tooltipItemUniqueType }}</p>
+					<div v-if="itemCreation.equipable"><p>{{ itemCreation.slotType.subtype }}</p><p>{{ tooltipItemWeaponType }}</p></div>
+					<p v-if="itemCreation.slotType.type == 'weapon'">{{ itemCreation.minDamage }} - {{ itemCreation.maxDamage }} Damage</p>
+					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype !== 'Off-Hand'">({{ (itemCreation.minDamage + itemCreation.maxDamage) / 2 }} Damage per click)</p>
+					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off-Hand'">({{ ((itemCreation.minDamage + itemCreation.maxDamage) / 2)/2 }} Damage per click)</p>
+					<p v-if="itemCreation.requiredLevel != null" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
+					<p style="color: #0f0">{{ itemCreation.effectDescription }}</p>
+					<p v-if="itemCreation.quote != null" style="color: #ffd100">"{{ itemCreation.quote }}"</p>
+					<p v-if="itemCreation.material" style="color: #68b7f2">Crafting Reagent</p>
+				</div>
+			</div>
 			<div id="item-creation" v-if="tab == 0">
 				<span>
 					<p>ID:</p>
@@ -33,6 +47,7 @@
 				</span>
 				<span>
 					<p>Icon:</p>
+					<input type="text" v-model="itemCreation.icon">
 				</span>
 				<span>
 					<p>Quality:</p>
@@ -97,7 +112,7 @@
 		</div>
 
 		<div id="generated-result">
-			<code>
+			<code v-if="tab == 0">
 {{printItem + ','}}
 			</code>
 		</div>
