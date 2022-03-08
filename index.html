@@ -21,7 +21,8 @@
 
 		<h2>{{ tabname }}</h2>
 		<div id="creation-window">
-			<div v-if="tab == 0" class="item-icon" :style="'background-image: url(assets/icons/'+itemIcon(itemCreation)+'.png'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
+			<div v-if="tab == 0" class="item-icon" style="z-index: 1; width: 65px; height: 65px; margin: -4px; background-image: url(https://wow.zamimg.com/images/Icon/large/border/default.png)"></div>
+			<div v-if="tab == 0" class="item-icon" :style="'background-image: url(https://wow.zamimg.com/images/wow/icons/large/'+itemIcon(itemCreation)+'.jpg'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
 			<div v-if="tab == 0" class="item-tooltip-placeholder">
 				<div class="item-tooltip">
 					<p :style="'color:'+getQualityColor">{{ itemCreation.name }}</p>
@@ -30,10 +31,15 @@
 					<p v-if="itemCreation.slotType.type == 'weapon'">{{ itemCreation.baseMinDamage }} - {{ itemCreation.baseMaxDamage }} Damage</p>
 					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype !== 'Off Hand'">({{ (itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2 }} Damage per click)</p>
 					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off Hand'">({{ ((itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2)/2 }} Damage per click)</p>
+					<p v-if="itemCreation.stats.strength != undefined">+ {{itemCreation.stats.strength}} Strength</p>
+					<p v-if="itemCreation.stats.agility != undefined">+ {{itemCreation.stats.agility}} Agility</p>
+					<p v-if="itemCreation.stats.intelligence != undefined">+ {{itemCreation.stats.intelligence}} Intelligence</p>
+					<p v-if="itemCreation.stats.stamina != undefined">+ {{itemCreation.stats.stamina}} Stamina</p>
+					<p v-if="itemCreation.stats.luck != undefined" style="color: #0f0">+ {{itemCreation.stats.luck}} Luck</p>
 					<p v-if="itemCreation.requiredLevel != null" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
-					<p style="color: #0f0">{{ itemCreation.effectDescription }}</p>
+					<p v-if="itemCreation.effectDescription != null" style="color: #0f0">{{ itemCreation.effectDescription }}</p>
 					<p v-if="itemCreation.quote != null" style="color: #ffd100">"{{ itemCreation.quote }}"</p>
-					<p v-if="itemCreation.material" style="color: #68b7f2">Crafting Reagent</p>
+					<p v-if="itemCreation.material" style="color: #68b7f2">Crafting Reagent</p>	
 				</div>
 			</div>
 			<div id="item-creation" v-if="tab == 0">
@@ -101,6 +107,13 @@
 						<option v-if="itemCreation.slotType.type === 'trinket'" value="Trinket">Trinket</option>
 					</select>
 				</span>
+				<span v-if="itemCreation.equipable">
+					<p>Required level:</p>
+					<span style="display: flex; flex-direction: row; align-items: start;">
+						<div @click="itemLevelRequired()" class="ui-checkbox" :style="itemRequiredLevelCheckbox"></div>
+						<input v-if="itemCreation.requiredLevel != undefined" type="number" v-model="itemCreation.requiredLevel" style="position: relative; width: 40px; top: 1px; margin-left: 6px" min="2" max="60">
+					</span>
+				</span>
 				<span v-if="itemCreation.slotType.type === 'weapon'">
 					<p>Damages:</p>
 					<span class="inline-flex-column-center">
@@ -113,7 +126,52 @@
 						<input type="range" class="custom-range" min="1" max="400" v-model="itemCreation.baseMaxDamage">
 					</span>
 				</span>
-			
+				<span v-if="itemCreation.equipable">
+					<p>Stats:</p>
+					<span>
+						Strength:
+						<input type="number" v-model="itemCreation.stats.strength" style="width: 55px;" min="0">
+					</span>
+					<span>
+						Agility:
+						<input type="number" v-model="itemCreation.stats.agility" style="width: 55px;" min="0">
+					</span>
+					<span>
+						Intelligence:
+						<input type="number" v-model="itemCreation.stats.intelligence" style="width: 55px;" min="0">
+					</span>
+					<span>
+						Stamina:
+						<input type="number" v-model="itemCreation.stats.stamina" style="width: 55px;" min="0">
+					</span>
+					<span>
+						Luck:
+						<input type="number" v-model="itemCreation.stats.luck" style="width: 55px;" min="0">
+					</span>
+				</span>
+				<span v-if="itemCreation.equipable !== true">
+					<p>Stackable:</p>
+					<span style="display: flex; flex-direction: row; align-items: start;">
+						<div @click="itemStackable()" class="ui-checkbox" :style="itemStackableCheckbox"></div>
+						<input v-if="itemCreation.stackMaxSize != undefined" type="number" v-model="itemCreation.stackMaxSize" style="position: relative; width: 50px; top: 1px; margin-left: 6px" min="2" max="60">
+					</span>
+				</span>
+				<span>
+					<p>Effect description:</p>
+					<input type="text" v-model="itemCreation.effectDescription" style="width: 400px;">
+				</span>
+				<span>
+					<p>Quote:</p>
+					<input type="text" v-model="itemCreation.quote" style="width: 400px;">
+				</span>
+				<span>
+					<p>Material:</p>
+					<div @click="itemIsAMaterial()" class="ui-checkbox" :style="itemMaterialCheckbox"></div>
+				</span>
+				<span>
+					<p>Salable:</p>
+					<div @click="itemSalable()" class="ui-checkbox" :style="itemSalableCheckbox"></div>
+				</span>
 			</div>
 		
 			<button @click="reset(tab)">reset</button>

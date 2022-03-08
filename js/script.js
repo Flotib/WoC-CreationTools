@@ -14,12 +14,19 @@ var app = new Vue({
 				name: undefined,
 				subtype: undefined,
 			},
+			stats: {
+				strength: undefined,
+				agility: undefined,
+				intelligence: undefined,
+				stamina: undefined,
+				luck: undefined,
+			},
 			icon: null,
 			baseMinDamage: undefined,
 			baseMaxDamage: undefined,
 			requiredLevel: undefined,
 			stackMaxSize: undefined,
-			stackSize: 1,
+			stackSize: undefined,
 			effectDescription: undefined,
         	quote: undefined,
 			material: undefined,
@@ -54,6 +61,18 @@ var app = new Vue({
 		'itemCreation.baseMaxDamage': function () {
 			if (this.itemCreation.baseMinDamage > this.itemCreation.baseMaxDamage) {
 				this.itemCreation.baseMinDamage = this.itemCreation.baseMaxDamage
+			}
+		},
+
+		'itemCreation.effectDescription': function () {
+			if (this.itemCreation.effectDescription === '') {
+				this.itemCreation.effectDescription = undefined
+			}
+		},
+
+		'itemCreation.quote': function () {
+			if (this.itemCreation.quote === '') {
+				this.itemCreation.quote = undefined
 			}
 		},
 
@@ -135,10 +154,48 @@ var app = new Vue({
 			}
 		},
 
+		itemRequiredLevelCheckbox() {
+			if (this.itemCreation.requiredLevel > 1) {
+				return 'background-color: white'
+			}
+			else {
+				return
+			}
+		},
+
+		itemStackableCheckbox() {
+			if (this.itemCreation.stackMaxSize !== undefined) {
+				return 'background-color: white'
+			}
+			else {
+				return
+			}
+		},
+
+		itemMaterialCheckbox() {
+			if (this.itemCreation.material !== undefined) {
+				return 'background-color: white'
+			}
+			else {
+				return
+			}
+		},
+
+		itemSalableCheckbox() {
+			if (this.itemCreation.salable == true) {
+				return 'background-color: white'
+			}
+			else {
+				return
+			}
+		},
+
 		printItem() { // Enzo saved me again bruuuh
 			this.itemCreation.id = parseInt(this.itemCreation.id)
+			this.itemCreation.requiredLevel !== undefined ? this.itemCreation.requiredLevel = parseInt(this.itemCreation.requiredLevel) : ''
 			this.itemCreation.baseMinDamage !== undefined ? this.itemCreation.baseMinDamage = parseInt(this.itemCreation.baseMinDamage) : ''
 			this.itemCreation.baseMaxDamage !== undefined ? this.itemCreation.baseMaxDamage = parseInt(this.itemCreation.baseMaxDamage) : ''
+			this.itemCreation.stackMaxSize !== undefined ? this.itemCreation.stackMaxSize = parseInt(this.itemCreation.stackMaxSize) : ''
 			const object = this.itemCreation;
 			const json = JSON.stringify(object, null, 4); 
 			const unquoted = json.replace(/"([^"]+)":/g, '$1:');
@@ -155,12 +212,37 @@ var app = new Vue({
 
 	methods: {
 
+		itemPriceMultiplier(item) {
+			switch (item.quality) {
+				case 0:
+					return 0.95
+				case 1:
+					return 1
+				case 2:
+					return 1.05
+				case 3:
+					return 1.1
+				case 4:
+					return 1.2
+				case 5:
+					return 1.4
+				case 6:
+					return 1.45
+				case 7:
+					return 0 // heirloom for now so 0
+				default:
+					return 1
+			}
+		},
+
 		itemEquipable() {
 			if (this.itemCreation.equipable == false || this.itemCreation.equipable == undefined) {
 				this.itemCreation.equipable = !this.itemCreation.equipable
 				this.itemCreation.slotType.type = "weapon"
 				this.itemCreation.slotType.name = 0
 				this.itemCreation.slotType.subtype = "One-Hand"
+				this.itemCreation.stackMaxSize = undefined
+				this.itemCreation.stackSize = undefined
 			} else {
 				this.itemCreation.equipable = undefined
 				this.itemCreation.slotType.type = undefined
@@ -168,6 +250,40 @@ var app = new Vue({
 				this.itemCreation.slotType.subtype = undefined
 				this.itemCreation.baseMinDamage = undefined
 				this.itemCreation.baseMaxDamage = undefined
+			}
+		},
+
+		itemLevelRequired() {
+			if (this.itemCreation.requiredLevel === undefined) {
+				this.itemCreation.requiredLevel = 2
+			} else if (this.itemCreation.requiredLevel > 1) {
+				this.itemCreation.requiredLevel = undefined
+			}
+		},
+
+		itemStackable() {
+			if (this.itemCreation.stackMaxSize === undefined) {
+				this.itemCreation.stackMaxSize = 1
+				this.itemCreation.stackSize = 1
+			} else if (this.itemCreation.stackMaxSize !== undefined) {
+				this.itemCreation.stackMaxSize = undefined
+				this.itemCreation.stackSize = undefined
+			}
+		},
+
+		itemIsAMaterial() {
+			if (this.itemCreation.material === undefined) {
+				this.itemCreation.material = true
+			} else if (this.itemCreation.material !== undefined) {
+				this.itemCreation.material = undefined
+			}
+		},
+
+		itemSalable() {
+			if (this.itemCreation.salable) {
+				this.itemCreation.salable = false
+			} else {
+				this.itemCreation.salable = true
 			}
 		},
 
@@ -195,7 +311,7 @@ var app = new Vue({
 				this.itemCreation.baseMaxDamage = undefined
 				this.itemCreation.requiredLevel = undefined
 				this.itemCreation.stackMaxSize = undefined
-				this.itemCreation.stackSize = 1
+				this.itemCreation.stackSize = undefined
 				this.itemCreation.effectDescription = undefined
 				this.itemCreation.quote = undefined
 				this.itemCreation.material = undefined
