@@ -79,6 +79,14 @@ option {
 	color: white;
 }
 
+input {
+	background-color: black;
+	height: 17px;
+	padding: 4px;
+	color: white;
+	border: 1px white solid;
+}
+
 .quality-poor {
 	color: #9d9d9d !important;
 }
@@ -145,10 +153,16 @@ option {
 	margin-bottom: 15px;
 }
 
-#creation-window div span {
+#creation-window div > span {
 	display: block;
 	padding: 2px;
-	margin: 12px 0 12px 0;
+	margin: 13px 0 13px 0;
+}
+
+#creation-window div span > p:first-child {
+	color: #7db5e9;
+	font-weight: 500;
+	margin-bottom: 4px;
 }
 
 #item-creation {
@@ -264,4 +278,48 @@ option {
 
 .item-tooltip-money-no-margin img {
 	margin-right: 0 !important;
+}
+
+.ui-checkbox {
+	width: 27px;
+	height: 27px;
+	background-color: black;
+	border: 1px solid white;
+	box-shadow: black inset 0 0 0 5px;
+}
+
+.inline-flex-column-center {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.inline-flex-column-center > * {
+	margin-bottom: 6px;
+}
+
+.inline-flex-column-center > *:last-child {
+	margin-bottom: 0px;
+}
+
+.custom-range {
+    -webkit-appearance: none;
+    width: 65px;
+    height: 2px;
+    appearance: none;
+    outline: none;
+    border: 1px solid white;
+    background-color: black;
+}
+
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../assets/img/ui/sliderbarbutton.png');
 }

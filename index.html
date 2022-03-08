@@ -21,15 +21,15 @@
 
 		<h2>{{ tabname }}</h2>
 		<div id="creation-window">
-			<div class="item-icon" :style="'background-image: url(assets/icons/'+itemIcon(itemCreation)+'.png'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
-			<div class="item-tooltip-placeholder">
+			<div v-if="tab == 0" class="item-icon" :style="'background-image: url(assets/icons/'+itemIcon(itemCreation)+'.png'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
+			<div v-if="tab == 0" class="item-tooltip-placeholder">
 				<div class="item-tooltip">
 					<p :style="'color:'+getQualityColor">{{ itemCreation.name }}</p>
 					<p v-if="itemCreation.unique != null">{{ tooltipItemUniqueType }}</p>
 					<div v-if="itemCreation.equipable"><p>{{ itemCreation.slotType.subtype }}</p><p>{{ tooltipItemWeaponType }}</p></div>
-					<p v-if="itemCreation.slotType.type == 'weapon'">{{ itemCreation.minDamage }} - {{ itemCreation.maxDamage }} Damage</p>
-					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype !== 'Off-Hand'">({{ (itemCreation.minDamage + itemCreation.maxDamage) / 2 }} Damage per click)</p>
-					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off-Hand'">({{ ((itemCreation.minDamage + itemCreation.maxDamage) / 2)/2 }} Damage per click)</p>
+					<p v-if="itemCreation.slotType.type == 'weapon'">{{ itemCreation.baseMinDamage }} - {{ itemCreation.baseMaxDamage }} Damage</p>
+					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype !== 'Off Hand'">({{ (itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2 }} Damage per click)</p>
+					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off Hand'">({{ ((itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2)/2 }} Damage per click)</p>
 					<p v-if="itemCreation.requiredLevel != null" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
 					<p style="color: #0f0">{{ itemCreation.effectDescription }}</p>
 					<p v-if="itemCreation.quote != null" style="color: #ffd100">"{{ itemCreation.quote }}"</p>
@@ -72,8 +72,8 @@
 				</span>
 				<span>
 					<p>Equipable:</p>
-					<input type="checkbox" @click="itemEquipable()">
-					<select v-if="itemCreation.equipable" v-model="itemCreation.slotType.type" @click="itemTypeChange()">
+					<div @click="itemEquipable()" class="ui-checkbox" :style="equipableCheckbox" style="margin-bottom: 6px"></div>
+					<select v-if="itemCreation.equipable" v-model="itemCreation.slotType.type">
 						<option value="weapon">Weapon</option>
 						<option value="trinket">Trinket</option>
 					</select>
@@ -101,9 +101,17 @@
 						<option v-if="itemCreation.slotType.type === 'trinket'" value="Trinket">Trinket</option>
 					</select>
 				</span>
-				<span>
-					<p></p>
-					
+				<span v-if="itemCreation.slotType.type === 'weapon'">
+					<p>Damages:</p>
+					<span class="inline-flex-column-center">
+						<input type="number" v-model="itemCreation.baseMinDamage" style="width: 65px;" min="0">
+						<input type="range" class="custom-range" min="0" max="400" v-model="itemCreation.baseMinDamage">
+					</span>
+					-
+					<span class="inline-flex-column-center">
+						<input type="number" v-model="itemCreation.baseMaxDamage" style="width: 65px;" min="1">
+						<input type="range" class="custom-range" min="1" max="400" v-model="itemCreation.baseMaxDamage">
+					</span>
 				</span>
 			
 			</div>
