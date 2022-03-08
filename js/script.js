@@ -17,7 +17,7 @@ var app = new Vue({
 			stats: {
 				strength: undefined,
 				agility: undefined,
-				intelligence: undefined,
+				intellect: undefined,
 				stamina: undefined,
 				luck: undefined,
 			},
@@ -250,6 +250,11 @@ var app = new Vue({
 				this.itemCreation.slotType.subtype = undefined
 				this.itemCreation.baseMinDamage = undefined
 				this.itemCreation.baseMaxDamage = undefined
+				this.itemCreation.stats.strength = undefined
+				this.itemCreation.stats.agility = undefined
+				this.itemCreation.stats.intellect = undefined
+				this.itemCreation.stats.stamina = undefined
+				this.itemCreation.stats.luck = undefined
 			}
 		},
 

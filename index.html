@@ -33,7 +33,7 @@
 					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off Hand'">({{ ((itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2)/2 }} Damage per click)</p>
 					<p v-if="itemCreation.stats.strength != undefined">+ {{itemCreation.stats.strength}} Strength</p>
 					<p v-if="itemCreation.stats.agility != undefined">+ {{itemCreation.stats.agility}} Agility</p>
-					<p v-if="itemCreation.stats.intelligence != undefined">+ {{itemCreation.stats.intelligence}} Intelligence</p>
+					<p v-if="itemCreation.stats.intellect != undefined">+ {{itemCreation.stats.intellect}} Intellect</p>
 					<p v-if="itemCreation.stats.stamina != undefined">+ {{itemCreation.stats.stamina}} Stamina</p>
 					<p v-if="itemCreation.stats.luck != undefined" style="color: #0f0">+ {{itemCreation.stats.luck}} Luck</p>
 					<p v-if="itemCreation.requiredLevel != null" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
@@ -137,8 +137,8 @@
 						<input type="number" v-model="itemCreation.stats.agility" style="width: 55px;" min="0">
 					</span>
 					<span>
-						Intelligence:
-						<input type="number" v-model="itemCreation.stats.intelligence" style="width: 55px;" min="0">
+						intellect:
+						<input type="number" v-model="itemCreation.stats.intellect" style="width: 55px;" min="0">
 					</span>
 					<span>
 						Stamina:
