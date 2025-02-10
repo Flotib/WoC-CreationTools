@@ -6,6 +6,8 @@ var app = new Vue({
 		cursorY: null,
 		icons: [],
 		itemsList: [],
+		toasts: [],
+		pastedItemCode: '',
 		hoverItem: {
 			item: [],
 		},
@@ -95,7 +97,22 @@ var app = new Vue({
 	computed: {
 
 		filteredItems() {
-			return this.itemsList.filter(item => item.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+			return this.itemsList.filter(item => {
+				const query = this.searchQuery.toLowerCase();
+		
+				// Si la recherche commence par #, cherchez dans les quotes, descriptions et ID
+				if (query.startsWith('#')) {
+					const textQuery = query.slice(1); // Supprime le #
+					return (
+						(item.quote && item.quote.toLowerCase().includes(textQuery)) ||
+						(item.effectDescription && item.effectDescription.toLowerCase().includes(textQuery)) ||
+						item.id.toString().includes(textQuery) // Recherche dans l'ID
+					);
+				}
+		
+				// Sinon, cherchez uniquement dans les noms
+				return item.name.toLowerCase().includes(query);
+			});
 		},
 
 		tooltipPosition() {
@@ -240,6 +257,13 @@ var app = new Vue({
 			const unquoted = json.replace(/"([^"]+)":/g, '$1:');
 			return unquoted
 		},
+
+		isItemAlreadySaved() {
+			// Vérifie si un item avec le même ID ou le même nom existe déjà
+			return this.filteredItems.some(item => 
+				item.id === this.itemCreation.id || item.name === this.itemCreation.name
+			);
+		}
 
 		/*
 		idcheck(){
@@ -399,6 +423,11 @@ var app = new Vue({
 				this.itemCreation.slotType.type = undefined
 				this.itemCreation.slotType.name = undefined
 				this.itemCreation.slotType.subtype = undefined
+				this.itemCreation.stats.strength = undefined
+				this.itemCreation.stats.agility = undefined
+				this.itemCreation.stats.intellect = undefined
+				this.itemCreation.stats.stamina = undefined
+				this.itemCreation.stats.luck = undefined
 				this.itemCreation.icon = null
 				this.itemCreation.baseMinDamage = undefined
 				this.itemCreation.baseMaxDamage = undefined
@@ -450,35 +479,60 @@ var app = new Vue({
 		},
 
 		copyItemCode(item) {
-            // Copie le code de l'item dans le presse-papiers
-            navigator.clipboard.writeText(item.code)
-                .then(() => {
-                    alert("Code copié : " + item.code); // Affiche une alerte pour confirmer
-                })
-                .catch((err) => {
-                    console.error("Erreur lors de la copie :", err);
-                });
-        },
+			// Convertir l'objet item en JSON
+			const json = JSON.stringify(item, null, 4); // Indentation de 4 espaces
+			const unquoted = json.replace(/"([^"]+)":/g, '$1:'); // Supprimer les guillemets des clés
+		
+			// Copier le JSON dans le presse-papiers
+			navigator.clipboard.writeText(unquoted)
+				.then(() => {
+					// Générer un ID unique avec Date.now()
+					const toastId = Date.now();
+					// Ajouter un nouveau toast à la liste
+					this.toasts.push({ id: toastId, message: "Code copied to clipboard!" });
+		
+					// Supprimer le toast après 3 secondes en utilisant son ID
+					setTimeout(() => {
+						this.toasts = this.toasts.filter(t => t.id !== toastId);
+					}, 3000);
+				})
+				.catch((err) => {
+					console.error("Error:", err); // Gestion des erreurs
+				});
+		},
 
 		loadItemFromCode() {
 			try {
 				// 1️⃣ Parse le JSON collé dans la zone de texte
 				let itemData = JSON.parse(this.pastedItemCode);
-	
+		
 				// 2️⃣ Vérifie que l'objet a bien la structure attendue
 				if (!itemData.id || !itemData.name) {
 					alert("Invalid item data! Make sure it's correctly formatted.");
 					return;
 				}
-	
+		
 				// 3️⃣ Charge l'objet dans le modèle `itemCreation`
-				this.itemCreation = { ...itemData };
-	
+				this.itemCreation = { ...this.itemCreation, ...itemData };
+		
+				// 4️⃣ "À la crados" : Force la mise à jour des damages en les définissant deux fois
+				if (itemData.baseMinDamage !== undefined || itemData.baseMaxDamage !== undefined) {
+					const { baseMinDamage, baseMaxDamage } = itemData;
+					this.itemCreation.baseMinDamage = baseMinDamage !== undefined ? baseMinDamage : 0;
+					this.itemCreation.baseMaxDamage = baseMaxDamage !== undefined ? baseMaxDamage : 0;
+		
+					// Deuxième étape pour forcer la mise à jour
+					setTimeout(() => {
+						this.itemCreation.baseMinDamage = baseMinDamage !== undefined ? baseMinDamage : 0;
+						this.itemCreation.baseMaxDamage = baseMaxDamage !== undefined ? baseMaxDamage : 0;
+					}, 10); // Un petit délai pour garantir que Vue.js met à jour les propriétés
+				}
+		
 				alert("Item loaded successfully!");
 			} catch (error) {
 				alert("Invalid JSON format! Please check your item code.");
 			}
-		},
+		}
 
 	},
 
