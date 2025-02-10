@@ -2,7 +2,14 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		tab: 0, // 0 -> item; 1 -> merchants; 2 -> enemies
+		cursorX: null,
+		cursorY: null,
 		icons: [],
+		itemsList: [],
+		hoverItem: {
+			item: [],
+		},
+		searchQuery: "",
 		itemCreation: {
 			id: 0,
 			name: '',
@@ -34,6 +41,7 @@ var app = new Vue({
 			sellPrice: undefined,
 			cost: undefined,
 		},
+		shiftPressed: false,
 	},
 
 	watch: {
@@ -76,9 +84,62 @@ var app = new Vue({
 			}
 		},
 
+		itemsList: {
+			handler(newItems) {
+				localStorage.setItem("itemsList", JSON.stringify(newItems));
+			},
+			deep: true
+		},
 	},
 
 	computed: {
+
+		filteredItems() {
+			return this.itemsList.filter(item => item.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+		},
+
+		tooltipPosition() {
+			let e = 0
+			let correctionY = 0
+			let correctionX = 0
+			this.cursorY
+			this.cursorX
+
+			const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+
+			if (document.querySelector('.saved-item-tooltip') && this.hoverItem) {
+				e = document.querySelector('.saved-item-tooltip')
+				correctionY = Math.max(e.offsetHeight + 5, this.cursorY)
+				correctionX = Math.min(this.cursorX, vw - e.offsetWidth - 30)
+			}
+
+			const left = correctionX + 10 + 'px'
+
+			const top = correctionY - 2 + 'px'
+
+
+			return {
+				left,
+				top
+			}
+		},
+
+		tooltipTextWidth() {
+			let e = 0
+			let correctionY = 0
+			let correctionX = 0
+			this.cursorY
+			this.cursorX
+
+			const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+
+			if (document.querySelector('.item-tooltip') && this.hoverItem) {
+				e = document.querySelector('.item-tooltip')
+				return e.offsetWidth
+			} else {
+				return null
+			}
+		},
 
 		tooltipItemWeaponType() {
 			let itemWeaponType = this.itemCreation.slotType.name
@@ -117,32 +178,10 @@ var app = new Vue({
 				0: 'Item creation',
 				1: 'Merchant creation',
 				2: 'Enemy creation',
+				3: 'Saved presets'
 			}
 
 			return tabMap[this.tab]
-		},
-
-		getQualityColor() {
-			switch (this.itemCreation.quality) {
-				case 0:
-					return '#9d9d9d'
-				case 1:
-					return '#fff'
-				case 2:
-					return '#1eff00'
-				case 3:
-					return '#0070dd'
-				case 4:
-					return '#a335ee'
-				case 5:
-					return '#ff8000'
-				case 6:
-					return '#e6cc80'
-				case 7:
-					return '#00ccff'
-				default:
-					return '#fff'
-			}
 		},
 
 		equipableCheckbox() {
@@ -211,6 +250,55 @@ var app = new Vue({
 	},
 
 	methods: {
+
+		getMouseCoords(e) {
+			this.cursorX = e.pageX
+			this.cursorY = e.pageY
+			//console.log({'x':e.pageX, 'y':e.pageY})
+		},
+
+		itemHoverEnter(item) {
+			this.hoverItem = item;
+		},
+
+		itemHoverLeave() {
+			this.hoverItem = null
+		},
+
+		handleKeyDown(event) {
+			if (event.key === "Shift") {
+				this.shiftPressed = true;
+			}
+		},
+
+		handleKeyUp(event) {
+			if (event.key === "Shift") {
+				this.shiftPressed = false;
+			}
+		},
+
+		getQualityColor(item) {
+			switch (item.quality) {
+				case 0:
+					return '#9d9d9d'
+				case 1:
+					return '#fff'
+				case 2:
+					return '#1eff00'
+				case 3:
+					return '#0070dd'
+				case 4:
+					return '#a335ee'
+				case 5:
+					return '#ff8000'
+				case 6:
+					return '#e6cc80'
+				case 7:
+					return '#00ccff'
+				default:
+					return '#fff'
+			}
+		},
 
 		itemPriceMultiplier(item) {
 			switch (item.quality) {
@@ -326,8 +414,82 @@ var app = new Vue({
 			}
 		},
 
+        saveItem() {
+            if (!this.itemCreation.name) {
+                alert("Enter a name!");
+                return;
+            }
+			if (this.itemCreation.id==0) {
+                alert("Enter a valid ID!");
+                return;
+            }
+            let storedItems = JSON.parse(localStorage.getItem("items")) || [];
+            storedItems.push({ ...this.itemCreation });
+            localStorage.setItem("items", JSON.stringify(storedItems));
+
+            this.loadItems();
+        },
+
+        loadItems() {
+            this.itemsList = JSON.parse(localStorage.getItem("items")) || [];
+        },
+
+        deleteItem(itemId) {
+			let storedItems = JSON.parse(localStorage.getItem("items")) || [];
+    
+			storedItems = storedItems.filter(item => item.id !== itemId);
+			
+			localStorage.setItem("items", JSON.stringify(storedItems));
+		
+			this.loadItems();
+		},
+
+		clearAllItems() {
+			localStorage.removeItem("items");
+			this.savedItems = [];
+		},
+
+		copyItemCode(item) {
+            // Copie le code de l'item dans le presse-papiers
+            navigator.clipboard.writeText(item.code)
+                .then(() => {
+                    alert("Code copié : " + item.code); // Affiche une alerte pour confirmer
+                })
+                .catch((err) => {
+                    console.error("Erreur lors de la copie :", err);
+                });
+        },
+
+		loadItemFromCode() {
+			try {
+				// 1️⃣ Parse le JSON collé dans la zone de texte
+				let itemData = JSON.parse(this.pastedItemCode);
+	
+				// 2️⃣ Vérifie que l'objet a bien la structure attendue
+				if (!itemData.id || !itemData.name) {
+					alert("Invalid item data! Make sure it's correctly formatted.");
+					return;
+				}
+	
+				// 3️⃣ Charge l'objet dans le modèle `itemCreation`
+				this.itemCreation = { ...itemData };
+	
+				alert("Item loaded successfully!");
+			} catch (error) {
+				alert("Invalid JSON format! Please check your item code.");
+			}
+		},
+
 	},
 
 	mounted() {
+		window.addEventListener('mousemove', this.getMouseCoords)
+		window.addEventListener("keydown", this.handleKeyDown);
+		window.addEventListener("keyup", this.handleKeyUp);
+		const savedItems = localStorage.getItem("itemsList");
+		if (savedItems) {
+			this.itemsList = JSON.parse(savedItems);
+		}
+		this.loadItems();
 	},
 })

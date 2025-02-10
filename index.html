@@ -17,31 +17,60 @@
 			<button @click="tab = 0">Items</button>
 			<button @click="tab = 1">Merchants</button>
 			<button @click="tab = 2">Enemies</button>
+			<button @click="tab = 3">Saved presets</button>
+		</div>
+
+		<div class="saved-item-tooltip-placeholder" :style="tooltipPosition">
+			<div class="saved-item-tooltip" v-if="hoverItem && hoverItem.id != null">
+				<p :style="'color:'+getQualityColor(itemCreation)">{{ hoverItem.name }}</p>
+				<p v-if="hoverItem.unique != 0">{{ tooltipItemUniqueType }}</p>
+				<div v-if="hoverItem.equipable"><p>{{ hoverItem.slotType.subtype }}</p><p>{{ tooltipItemWeaponType }}</p></div>
+				<p v-if="hoverItem.slotType.type == 'weapon'" class="saved-tooltip-text-damage">{{ hoverItem.baseMinDamage }} - {{ hoverItem.baseMaxDamage }} Damage</p>
+				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.strength != undefined">+ {{hoverItem.stats.strength}} Strength</p>
+				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.agility != undefined">+ {{hoverItem.stats.agility}} Agility</p>
+				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.intellect != undefined">+ {{hoverItem.stats.intellect}} Intellect</p>
+				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.stamina != undefined">+ {{hoverItem.stats.stamina}} Stamina</p>
+				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.luck != undefined" style="color: #0f0">+ {{hoverItem.stats.luck}} Luck</p>
+				<p v-if="hoverItem.requiredLevel != null">Requires Level {{ hoverItem.requiredLevel }}</p>
+				<p v-if="hoverItem.effectDescription != null" style="color: #0f0" class="saved-tooltip-text">{{ hoverItem.effectDescription }}</p>
+				<p v-if="hoverItem.quote != null" style="color: #ffd100" class="saved-tooltip-text">"{{ hoverItem.quote }}"</p>
+				<p v-if="hoverItem.material" style="color: #68b7f2">Crafting Reagent</p>
+			</div>					
 		</div>
 
 		<h2>{{ tabname }}</h2>
 		<div id="creation-window">
+			<input type="text" v-if="tab == 3" v-model="searchQuery" placeholder="Search for an item..." class="search-input" />
+			<button v-if="tab == 3" @click="clearAllItems" :disabled="!shiftPressed" style="user-select: none;">Clear All</button>
+			<div class="saved-item-frame" v-if="tab == 3">
+				<div class="saved-item-list" v-for="item in filteredItems" @mouseover="itemHoverEnter(item)" @mouseleave="itemHoverLeave()" :key="index" @click="copyItemCode(item)">
+					<div class="item-list-icon" :style="'background-image: url(https://wow.zamimg.com/images/wow/icons/large/'+itemIcon(item)+'.jpg'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
+					<div class="item-list-name">
+						<p :style="'color:'+getQualityColor(item)">{{ item.name }}</p>
+					</div>
+					<button @click="deleteItem(item.id) && itemHoverLeave()" :disabled="!shiftPressed" style="user-select: none;">Delete</button>
+				</div>
+			</div>
 			<div v-if="tab == 0" class="item-icon" style="z-index: 1; width: 65px; height: 65px; margin: -4px; background-image: url(https://wow.zamimg.com/images/Icon/large/border/default.png)"></div>
 			<div v-if="tab == 0" class="item-icon" :style="'background-image: url(https://wow.zamimg.com/images/wow/icons/large/'+itemIcon(itemCreation)+'.jpg'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
 			<div v-if="tab == 0" class="item-tooltip-placeholder">
 				<div class="item-tooltip">
-					<p :style="'color:'+getQualityColor">{{ itemCreation.name }}</p>
+					<p :style="'color:'+getQualityColor(itemCreation)">{{ itemCreation.name }}</p>
 					<p v-if="itemCreation.unique != null">{{ tooltipItemUniqueType }}</p>
 					<div v-if="itemCreation.equipable"><p>{{ itemCreation.slotType.subtype }}</p><p>{{ tooltipItemWeaponType }}</p></div>
 					<p v-if="itemCreation.slotType.type == 'weapon'">{{ itemCreation.baseMinDamage }} - {{ itemCreation.baseMaxDamage }} Damage</p>
-					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype !== 'Off Hand'">({{ (itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2 }} Damage per click)</p>
-					<p v-if="itemCreation.slotType.type == 'weapon' && itemCreation.slotType.subtype === 'Off Hand'">({{ ((itemCreation.baseMinDamage + itemCreation.baseMaxDamage) / 2)/2 }} Damage per click)</p>
-					<p v-if="itemCreation.stats.strength != undefined">+ {{itemCreation.stats.strength}} Strength</p>
-					<p v-if="itemCreation.stats.agility != undefined">+ {{itemCreation.stats.agility}} Agility</p>
-					<p v-if="itemCreation.stats.intellect != undefined">+ {{itemCreation.stats.intellect}} Intellect</p>
-					<p v-if="itemCreation.stats.stamina != undefined">+ {{itemCreation.stats.stamina}} Stamina</p>
-					<p v-if="itemCreation.stats.luck != undefined" style="color: #0f0">+ {{itemCreation.stats.luck}} Luck</p>
-					<p v-if="itemCreation.requiredLevel != null" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
+					<p v-if="itemCreation.stats.strength != null && itemCreation.stats.strength != 0">+ {{itemCreation.stats.strength}} Strength</p>
+					<p v-if="itemCreation.stats.agility != null && itemCreation.stats.agility != 0">+ {{itemCreation.stats.agility}} Agility</p>
+					<p v-if="itemCreation.stats.intellect != null && itemCreation.stats.intellect != 0">+ {{itemCreation.stats.intellect}} Intellect</p>
+					<p v-if="itemCreation.stats.stamina != null && itemCreation.stats.stamina != 0">+ {{itemCreation.stats.stamina}} Stamina</p>
+					<p v-if="itemCreation.stats.luck != null && itemCreation.stats.luck != 0" style="color: #0f0">+ {{itemCreation.stats.luck}} Luck</p>
+					<p v-if="itemCreation.requiredLevel != null && itemCreation.requiredLevel != 0" style="color: #fff">Requires Level {{ itemCreation.requiredLevel }}</p>
 					<p v-if="itemCreation.effectDescription != null" style="color: #0f0">{{ itemCreation.effectDescription }}</p>
 					<p v-if="itemCreation.quote != null" style="color: #ffd100">"{{ itemCreation.quote }}"</p>
 					<p v-if="itemCreation.material" style="color: #68b7f2">Crafting Reagent</p>	
 				</div>
 			</div>
+			<button @click="saveItem()" v-if="tab == 0">Save item</button>
 			<div id="item-creation" v-if="tab == 0">
 				<span>
 					<p>ID:</p>
@@ -61,7 +90,7 @@
 						<option class="quality-poor" :value="0">Poor</option>
 						<option class="quality-common" :value="1">Common</option>
 						<option class="quality-uncommon" :value="2">Uncommon</option>
-						<option class="quality-rare":value="3">Rare</option>
+						<option class="quality-rare" :value="3">Rare</option>
 						<option class="quality-epic" :value="4">Epic</option>
 						<option class="quality-legendary" :value="5">Legendary</option>
 						<option class="quality-artifact" :value="6">Artifact</option>
@@ -174,10 +203,15 @@
 				</span>
 			</div>
 		
-			<button @click="reset(tab)">reset</button>
+			<button @click="reset(tab)" v-if="tab != 3">reset</button>
 		</div>
 
 		<div id="generated-result">
+			<div class="paste-item-code-area">
+				<p>Paste item code:</p>
+				<textarea v-model="pastedItemCode" placeholder="Paste your item code here..." style="width: 380px; height: 200px;" id="pasteItemCode"></textarea>
+				<button @click="loadItemFromCode">Load Item</button>
+			</div>
 			<code v-if="tab == 0">
 {{printItem + ','}}
 			</code>

@@ -133,17 +133,17 @@ input {
 	margin-right: 30px;
 	padding: 10px 20px 10px 20px;
 	border-radius: 25px;
-	background-color: #f38e8e;
+	background-color: #940f0f;
 	transition-duration: 90ms;
 }
 
 #navbar > button:hover {
-	background-color: #eb5050;
+	background-color: #bd1717;
 }
 
 #navbar > button:active {
 	transform: scale(0.96);
-	background-color: #ffffff;
+	background-color: #570808;
 }
 
 #creation-window {
@@ -322,4 +322,147 @@ input {
     background-repeat: no-repeat;
     background-position: center;
     background-image: url('../assets/img/ui/sliderbarbutton.png');
+}
+
+.saved-item-frame {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.saved-item-list {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 23.5%;
+	height: 36px;
+	border-radius: 4px;
+	padding: 5px;
+	background-color: #000;
+	border: 1px solid white
+}
+
+.saved-item-list:hover {
+	box-shadow: 0 0 8px 2px inset #06b;
+}
+
+.item-list-icon {
+	position: relative;
+	width: 32px;
+	height: 32px;
+	background-position: center;
+	background-size: contain;
+	border-radius: 3px;
+	margin-right: 8px;
+	border: 1px solid white
+}
+
+.saved-item-tooltip-placeholder {
+	position: absolute;
+	width: 280px; /* max size */
+	pointer-events: none;
+	user-select: none;
+}
+
+.saved-item-tooltip {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	z-index: 1000;
+	width: auto;
+	max-width: 680px; /* 280px default, if sellprice is too high it can be a problem*/
+	height: auto;
+	pointer-events: none;
+	user-select: none;
+	border-radius: 7px;
+	left: 0;
+	bottom: 0;
+	border: 2px groove #bbb;
+	background-color: #000218c6;
+	padding: 8px;
+	pointer-events: none;
+	user-select: none;
+	font-family: BlizQuadrata Web;
+}
+
+.saved-item-tooltip .saved-tooltip-text-damage {
+	overflow: hidden;
+    white-space: nowrap;
+}
+
+.saved-item-tooltip p {
+	font-size: 18px;
+	line-height: 20px;
+	color: #fff;
+	font-weight: 100;
+}
+
+.saved-item-tooltip div {
+	display: flex;
+	justify-content: space-between;
+}
+
+.saved-item-tooltip div p {
+	font-size: 18px !important;
+	line-height: 20px !important;
+	color: #fff !important;
+	font-weight: 100 !important;
+	margin: 0 !important;
+}
+
+.saved-item-tooltip p:first-of-type {
+	font-size: 22px;
+	line-height: 20px;
+	margin-bottom: 4px;
+}
+
+.item-list-name {
+	width: 80%;
+	font-family: BlizQuadrata Web;
+	font-size: 20px;
+}
+
+.search-input {
+    width: 30%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+	padding: 4px 12px 4px 12px;
+	border-radius: 5px;
+	border: 1px solid white;
+	color: white;
+	background-color: #aa0000;
+}
+
+button:hover {
+	box-shadow: 0 0 3px 3px inset red;
+}
+
+button:active {
+	box-shadow: 0 0 3px 3px inset #600;
+}
+
+button[disabled=disabled], button:disabled {
+    background-color: #333;
+	box-shadow: 0 0 0 0 #333;
+}
+
+.paste-item-code-area {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 16px;
+	background-color: black;
+	border-radius: 6px;
+	border: 1px solid white;
+	width: 600px;
+}
+
+.paste-item-code-area button {
+	width: 98px;
 }
