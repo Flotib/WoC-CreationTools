@@ -24,7 +24,7 @@
 			<div class="saved-item-tooltip" v-if="hoverItem && hoverItem.id != null">
 				<p :style="'color:'+getQualityColor(hoverItem)">{{ hoverItem.name }}</p>
 				<p v-if="hoverItem.unique != 0">{{ tooltipItemUniqueType }}</p>
-				<div v-if="hoverItem.equipable"><p>{{ hoverItem.slotType.subtype }}</p><p>{{ tooltipHoverItemWeaponType() }}</p></div>
+				<div v-if="hoverItem.equipable"><p>{{ hoverItem.slotType.subtype }}</p><p>{{ tooltipHoverItemWeaponType }}</p></div>
 				<p v-if="hoverItem.slotType.type == 'weapon'" class="saved-tooltip-text-damage">{{ hoverItem.baseMinDamage }} - {{ hoverItem.baseMaxDamage }} Damage</p>
 				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.strength != undefined">+ {{hoverItem.stats.strength}} Strength</p>
 				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.agility != undefined">+ {{hoverItem.stats.agility}} Agility</p>
@@ -54,7 +54,7 @@
 					<div class="item-list-name" @click="copyItemCode(item)">
 						<p :style="'color:'+getQualityColor(item)">{{ item.name }}</p>
 					</div>
-					<button @click="deleteItem(item.id) && itemHoverLeave()" :disabled="!shiftPressed" style="user-select: none;">Delete</button>
+					<button @click="deleteItem(item.id) + itemHoverLeave()" :disabled="!shiftPressed" style="user-select: none;">Delete</button>
 				</div>
 			</div>
 			<div v-if="tab == 0" class="item-icon" style="z-index: 1; width: 65px; height: 65px; margin: -4px; background-image: url(https://wow.zamimg.com/images/Icon/large/border/default.png)"></div>

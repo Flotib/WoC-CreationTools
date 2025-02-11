@@ -178,6 +178,26 @@ var app = new Vue({
 			return weaponTypeMapping[itemWeaponType]
 		},
 
+		tooltipHoverItemWeaponType() {
+			let itemWeaponType = this.hoverItem.slotType.name
+			
+			const weaponTypeMapping = {
+				0: 'Sword',
+				1: 'Axe',
+				2: 'Mace',
+				3: 'Dagger',
+				4: 'Polearm',
+				5: 'Fist Weapon',
+				6: 'Staff',
+				7: 'Bow',
+				8: 'Crossbow',
+				9: 'Gun',
+				20: 'Shield',
+			}
+
+			return weaponTypeMapping[itemWeaponType]
+		},
+
 		tooltipItemUniqueType() {
 			let itemUniqueType = this.itemCreation.unique
 
@@ -274,26 +294,6 @@ var app = new Vue({
 	},
 
 	methods: {
-
-		tooltipHoverItemWeaponType() {
-			let itemWeaponType = this.hoverItem.slotType.name
-
-			const weaponTypeMapping = {
-				0: 'Sword',
-				1: 'Axe',
-				2: 'Mace',
-				3: 'Dagger',
-				4: 'Polearm',
-				5: 'Fist Weapon',
-				6: 'Staff',
-				7: 'Bow',
-				8: 'Crossbow',
-				9: 'Gun',
-				20: 'Shield',
-			}
-
-			return weaponTypeMapping[itemWeaponType]
-		},
 
 		getMouseCoords(e) {
 			this.cursorX = e.pageX
