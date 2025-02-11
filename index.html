@@ -24,7 +24,7 @@
 			<div class="saved-item-tooltip" v-if="hoverItem && hoverItem.id != null">
 				<p :style="'color:'+getQualityColor(hoverItem)">{{ hoverItem.name }}</p>
 				<p v-if="hoverItem.unique != 0">{{ tooltipItemUniqueType }}</p>
-				<div v-if="hoverItem.equipable"><p>{{ hoverItem.slotType.subtype }}</p><p>{{ tooltipItemWeaponType }}</p></div>
+				<div v-if="hoverItem.equipable"><p>{{ hoverItem.slotType.subtype }}</p><p>{{ tooltipHoverItemWeaponType() }}</p></div>
 				<p v-if="hoverItem.slotType.type == 'weapon'" class="saved-tooltip-text-damage">{{ hoverItem.baseMinDamage }} - {{ hoverItem.baseMaxDamage }} Damage</p>
 				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.strength != undefined">+ {{hoverItem.stats.strength}} Strength</p>
 				<p v-if="hoverItem.stats !== undefined && hoverItem.stats.agility != undefined">+ {{hoverItem.stats.agility}} Agility</p>
@@ -49,9 +49,9 @@
 			<input type="text" v-if="tab == 3" v-model="searchQuery" placeholder="Search for an item... Use # to search for an ID or text" class="search-input" />
 			<button v-if="tab == 3" @click="clearAllItems" :disabled="!shiftPressed" style="user-select: none;">Clear All</button>
 			<div class="saved-item-frame" v-if="tab == 3">
-				<div class="saved-item-list" v-for="item in filteredItems" @mouseover="itemHoverEnter(item)" @mouseleave="itemHoverLeave()" :key="item.id" @click="copyItemCode(item)">
-					<div class="item-list-icon" :style="'background-image: url(https://wow.zamimg.com/images/wow/icons/large/'+itemIcon(item)+'.jpg'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
-					<div class="item-list-name">
+				<div class="saved-item-list" v-for="item in filteredItems" @mouseover="itemHoverEnter(item)" @mouseleave="itemHoverLeave()" :key="item.id">
+					<div class="item-list-icon" @click="copyItemCode(item)" :style="'background-image: url(https://wow.zamimg.com/images/wow/icons/large/'+itemIcon(item)+'.jpg'"></div> <!--Put the WoW folder "icons" yourself, it is about ~160Mo-->
+					<div class="item-list-name" @click="copyItemCode(item)">
 						<p :style="'color:'+getQualityColor(item)">{{ item.name }}</p>
 					</div>
 					<button @click="deleteItem(item.id) && itemHoverLeave()" :disabled="!shiftPressed" style="user-select: none;">Delete</button>
